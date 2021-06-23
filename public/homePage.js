@@ -5,7 +5,11 @@
 const logoutButton = new LogoutButton();
 
 logoutButton.action = () => {
-  ApiConnector.logout(responseBody => responseBody.success ? location.reload() : logoutButton.setLogoutErrorMessage);
+  ApiConnector.logout(responseBody => {
+    if (responseBody.success) {
+      location.reload();
+    }
+  });
 }
 
 //Получение информации о пользователе
@@ -21,13 +25,13 @@ ApiConnector.current(responseBody => {
 const ratesBoard = new RatesBoard();
 
 function exchangeRates(responseBody) {
-  if (responseBody.success){
+  if (responseBody.success) {
     ratesBoard.clearTable();
-    ratesBoard.fillTable();
+    ratesBoard.fillTable(responseBody.data);
   }
 }
-exchangeRates();
-setInterval(() => exchangeRates(), 60000);
+ApiConnector.getStocks(exchangeRates);
+setInterval(() => ApiConnector.getStocks(exchangeRates), 60000);
 
 //Операции с деньгами
 
@@ -73,8 +77,8 @@ const favoritesWidget = new FavoritesWidget;
 ApiConnector.getFavorites(responseBody => {
   if (responseBody.success) {
     favoritesWidget.clearTable();
-    favoritesWidget.fillTable();
-    moneyManager.updateUsersList();
+    favoritesWidget.fillTable(responseBody.data);
+    moneyManager.updateUsersList(responseBody.data);
   }
 });
 
@@ -82,8 +86,8 @@ favoritesWidget.addUserCallback = data => {
   ApiConnector.addUserToFavorites(data, responseBody => {
     if (responseBody.success) {
       addUserCallback.clearTable();
-      addUserCallback.fillTable();
-      moneyManager.updateUsersList();
+      addUserCallback.fillTable(responseBody.data);
+      moneyManager.updateUsersList(responseBody.data);
       favoritesWidget.setMessage(true, "Вы успешно добавлены в список избранных");
     } else {
       favoritesWidget.setMessage(false, responseBody.error);
@@ -95,8 +99,8 @@ favoritesWidget.removeUserCallback = data => {
   ApiConnector.removeUserFromFavorites(data, responseBody => {
     if (responseBody.success) {
       addUserCallback.clearTable();
-      addUserCallback.fillTable();
-      moneyManager.updateUsersList();
+      addUserCallback.fillTable(responseBody.data);
+      moneyManager.updateUsersList(responseBody.data);
       favoritesWidget.setMessage(true, "Пользователь удалён из списка избранного");
     } else {
       favoritesWidget.setMessage(false, responseBody.error);
