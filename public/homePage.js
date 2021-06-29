@@ -85,8 +85,8 @@ ApiConnector.getFavorites(responseBody => {
 favoritesWidget.addUserCallback = data => {
   ApiConnector.addUserToFavorites(data, responseBody => {
     if (responseBody.success) {
-      addUserCallback.clearTable();
-      addUserCallback.fillTable(responseBody.data);
+      favoritesWidget.clearTable();
+      favoritesWidget.fillTable(responseBody.data);
       moneyManager.updateUsersList(responseBody.data);
       favoritesWidget.setMessage(true, "Вы успешно добавлены в список избранных");
     } else {
@@ -98,8 +98,8 @@ favoritesWidget.addUserCallback = data => {
 favoritesWidget.removeUserCallback = data => {
   ApiConnector.removeUserFromFavorites(data, responseBody => {
     if (responseBody.success) {
-      addUserCallback.clearTable();
-      addUserCallback.fillTable(responseBody.data);
+      favoritesWidget.clearTable();
+      favoritesWidget.fillTable(responseBody.data);
       moneyManager.updateUsersList(responseBody.data);
       favoritesWidget.setMessage(true, "Пользователь удалён из списка избранного");
     } else {
